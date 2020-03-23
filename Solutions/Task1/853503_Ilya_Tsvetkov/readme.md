@@ -3,7 +3,7 @@ Python version 3.8.2
 HOW TO
 =====================
 Start(Windows):
-python3 ***path*** ***number of task(1-5)*** --adress ***path to txt file***
+python3 "***path***" ***number of task(1-5)*** --adress "***path to txt file***"
 ***
 Realization
 =====================
