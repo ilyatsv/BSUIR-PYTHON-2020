@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Книги</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <style>
+    .addbar {
+     width:200px;
+     height:400px;
+     float:left;
+     }
+     .content{
+     width:900px;
+     margin-left:230px;
+     
+    </style>
+</head>
+<body class="container">
+<div>
+<div class="addbar">
+<a class="btn btn-outline-dark" href="/">Back</a>
+{% if request.user.is_authenticated and request.user.student.stbool %}
+    <form method="POST" action="create/">
+        {% csrf_token %}
+        <p>
+            <label>Введите название</label><br>
+            <input type="text" name="name"  required/>
+        </p>
+        <p>
+            <label>Введите год издания</label><br>
+            <input type="number" name="age" required/>
+        </p>
+        <p>
+            <label>Введите жанр</label><br>
+            <input type="text" name="genre" required/>
+        </p>
+        <p>
+            <label>Введите Автора</label><br>
+            <input type="text" name="author1" required/>
+        </p>
+        <p>
+            <label>Введите Автора*</label><br>
+            <input type="text" name="author2"/>
+        </p>
+        <p>
+            <label>Введите Автора*</label><br>
+            <input type="text" name="author3"/>
+        </p>
+        <input type="submit" value="Сохранить" > 
+</form>
+{% endif %}
+</div>
+
+<div class="content">
+<div style="width:400px;margin-top:15px;">
+
+<form  class="form-inline my-2 my-lg-0" action="{% url 'book' %}">
+<div style="width:200px;float:left;">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aaria-label="Search" name="search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </div>
+<select class="form-control" style="width:200px" name="select">
+  <option value="1">Название\Год</option>
+  <option value="2">Жанр</option>
+  <option value="3">Автор</option>
+</select>
+</form>
+</div>
+    {% if book.count > 0 %}
+    <h2>Список книг</h2>
+    <table class="table">
+        <tr><th>Имя</th><th>Год создания</th><th>Жанр</th><th>Авторы</th><th></th></tr>
+        {% for books in book %}
+        {% if not books.name == "null" %}
+        <tr><td>{{ books.name }}</td><td>{{ books.age }}</td>
+        <td>
+            {% for genre in books.genre.all %}
+            {{ genre.name }}
+            {% endfor %}
+            </td>
+        <td>
+            {% for authors in books.author.all %}
+            {{ authors.name }}
+            {% endfor %}
+            </td>
+{% if request.user.is_authenticated and not request.user.student.book == books and not books.student and request.user.student.stbool %}
+        <td><a href="take_book/{{books.id}}">Взять себе</a> 
+{% elif request.user.is_authenticated and request.user.student.book == books  and request.user.student.stbool %}
+        <td><a href="put_book/">Положить на полку</td>
+{% elif request.user.student.stbool %}
+        <td><a href="">В чужих руках</td>
+{% endif %}   
+{% endif %}        
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+</div>
+
+</body>
+
+</html>
